@@ -2,6 +2,7 @@
 example.gauss.graph
 gtrlib.largetrees.bib
 gtrlib.largetrees.sty
+gtrlib.largetrees.code.tex
 
 ## Core latex/pdflatex auxiliary files:
 *.aux

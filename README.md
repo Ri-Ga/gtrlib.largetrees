@@ -1,7 +1,7 @@
 The gtrlib.largetrees Package
 =======================
 
-Copyright (C) 2015-2016 Richard Gay
+Copyright (C) 2015-2017 Richard Gay
 
 Released under the [LaTeX Project Public License](http://www.latex-project.org/lppl/) version 1.2 or later
 
@@ -28,17 +28,21 @@ and possibly also with
 * Makefile
 * gtrlib.largetrees.pdf (generated from gtrlib.largetrees.dtx)
 * gtrlib.largetrees.sty (generated from gtrlib.largetrees.dtx)
+* gtrlib.largetrees.code.tex (generated from gtrlib.largetrees.dtx)
 
 To install the `gtrlib.largetrees` package, you additionally need
 * docstrip.tex
 
-To build the package (`gtrlib.largetrees.sty`), run one of the following
+To build the package (`gtrlib.largetrees.sty`) as well as the library
+for the genealogytree package (`gtrlib.largetrees.code.tex`),
+run one of the following
 ```
     latex gtrlib.largetrees.ins
     make package (needs Makefile)
 ```
 
-Put the resulting `gtrlib.largetrees.sty` somewhere where LaTeX can find it.
+Put the resulting `gtrlib.largetrees.sty` and `gtrlib.largetrees.code.tex`
+somewhere where LaTeX can find it.
 Read the documentation of your LaTeX system to find out where this
 might be.
 

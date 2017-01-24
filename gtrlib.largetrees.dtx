@@ -1,6 +1,6 @@
 % \iffalse meta-comment
 %
-% Copyright (C) 2015-2016 by Richard Gay <richard.gay@t-online.de>
+% Copyright (C) 2015-2017 by Richard Gay <richard.gay@t-online.de>
 % -------------------------------------------------------
 % 
 % This file may be distributed and/or modified under the
@@ -22,7 +22,7 @@
 %<package>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<package>\ProvidesPackage{gtrlib.largetrees}
 %<*package>
-    [2016/12/23 v1.0 Package providing extended options for the genealogytree package]
+    [2017/01/24 v1.1 Package providing extended options for the genealogytree package]
 %</package>
 %
 %<*driver>
@@ -125,7 +125,9 @@ parent {
 \usepackage{showexpl}
 \lstset{gobble=2,frame=trbl,rframe={},backgroundcolor=\color{black!5!white}}
 \lstset{explpreset={numbers=none,columns=fixed,basicstyle=\footnotesize\ttfamily}}
-\lstset{preset={\small\sffamily},overhang=2cm,pos=r,varwidth=true}
+\lstset{overhang=2cm,pos=r,varwidth=true}
+\lstset{preset={\small\sffamily
+  \renewcommand\gtruselibrary[1]{}}}
 \usepackage{pbox}
 \newcommand\NiceDescribeStuff[2]{% #1=margin text, #2=body text
   \medskip\par\noindent\leavevmode%
@@ -140,8 +142,8 @@ parent {
   \NiceDescribeStuff{\hbox to 0pt{\hss\string#1}}{#2}}
 \newcommand\NiceDescribeConstant[1]{% #1=constant
   \NiceDescribeStuff{\hbox to 0pt{\hss #1\quad}}{}\ignorespaces}
-\usepackage[templates]{genealogytree}
-\usepackage{gtrlib.largetrees}
+\usepackage[templates]{genealogytree}[2017/01/20]
+\gtruselibrary{largetrees}
 \usepackage{hypdoc}
 \usepackage[capitalise,nameinlink]{cleveref}
 \EnableCrossrefs
@@ -174,6 +176,7 @@ parent {
 %   Right brace   \}     Tilde         \~}
 %
 % \changes{v1.0}{2016/12/23}{Initial version}
+% \changes{v1.1}{2017/01/24}{Split into package and library}
 %
 % \GetFileInfo{gtrlib.largetrees.dtx}
 %
@@ -217,12 +220,16 @@ parent {
 %
 % To use the package, use
 % \begin{LTXexample}
+% \usepackage{genealogytree}
+% \gtruselibrary{largetrees}
+% \end{LTXexample}
+% or
+% \begin{LTXexample}
 % \usepackage{gtrlib.largetrees}
 % \end{LTXexample}
-% The following approaches do \emph{not} work currently:
+% Note that the following approach does \emph{not} work:
 % \begin{itemize}[nosep]
 % \item |\usepackage[largetrees]{genealogytree}|
-% \item |\gtruselibrary{largetrees}|
 % \end{itemize}
 %
 % \section{Database Fields}
@@ -474,15 +481,30 @@ parent {
 % \appendix
 %
 % \StopEventually{}
+% \section{Implementation}
+%
+% \subsection{Wrapper Package}
+%
 %\iffalse
 %<*package>
 %\fi
-%
-% \section{Implementation}
-%
 % The package has the following dependencies:
 %    \begin{macrocode}
-\RequirePackage{genealogytree}
+\RequirePackage{genealogytree}[2017/01/20]
+\gtruselibrary{largetrees}
+%    \end{macrocode}
+%
+% The remaining code provides the \textsf{largetrees} library
+% for the \textsf{genealogytree} package.
+%\iffalse
+%</package>
+%<*gtrlib>
+%\fi
+%
+% \subsection{Dependencies}
+%
+% The library has the following dependencies:
+%    \begin{macrocode}
 \RequirePackage{etoolbox}
 %    \end{macrocode}
 %
@@ -638,8 +660,8 @@ parent {
 % sparse nodes.
 %    \begin{macrocode}
   sparse node size from/.code args={#1 to #2}{%
-    \gdef\gtrlt@sparsenode@minsize{#1}%
-    \gdef\gtrlt@sparsenode@maxsize{#2}},
+    \dimdef\gtr@@kv@@gtrlt@sparsenode@minsize{#1}%
+    \dimdef\gtr@@kv@@gtrlt@sparsenode@maxsize{#2}},
 %    \end{macrocode}
 % The |sparse max fields| defines the maximum number of fields
 % of a person with which the node is still considered sparse.
@@ -665,44 +687,11 @@ parent {
 }
 %    \end{macrocode}
 %
-% \begin{macro}{\gtrltRegisterLevelOverwritable}
-% The |\gtrltRegisterLevelOverwrite|\marg{macro} registers \meta{macro}
-% as a variable that can have a global setting as well as level-local
-% settings. Extending the variables seems not to be directly supported
-% by the \textsf{genealogytree} package. Therefore, we implement this
-% by some hacks and patching.
+% The following registers the level-local macros used by the above
+% options.
 %    \begin{macrocode}
-\newcommand\gtrltRegisterLevelOverwritable[1]{%
-%    \end{macrocode}
-% The following ensures that the global setting of the \meta{macro} is
-% saved into an auxiliary macro \cs{gtrlt@@\meta{macro}}. This is done
-% such that the global value can be retrieved for each level from the
-% auxiliary macro.
-%    \begin{macrocode}
-  \appto\gtr@proc@level@save@settings{%
-    \ifdef{#1}%
-      {\csdimdef{gtrlt@@\expandafter\@gobble\string#1}{#1}}%
-      {}}%
-%    \end{macrocode}
-% When the level options are loaded, we first recover the global setting
-% of \meta{macro} from the auxiliary macro. The following patching
-% aims to perform this \emph{before} the level options are loaded.
-%    \begin{macrocode}
-  \patchcmd{\gtr@proc@level@opt}{\begingroup}{%
-    \begingroup\letcs#1{gtrlt@@\expandafter\@gobble\string#1}}{}{}%
-%    \end{macrocode}
-% After the level options are loaded, we ensure that \meta{macro} is
-% available at the global level.
-%    \begin{macrocode}
-  \patchcmd{\gtr@proc@level@opt}{\endgroup}{%
-    \global\let#1#1\endgroup}{}{}}
-%    \end{macrocode}
-% \end{macro}
-% The following registers the level-overwritable macros introduced
-% by this package.
-%    \begin{macrocode}
-\gtrltRegisterLevelOverwritable{\gtrlt@sparsenode@minsize}
-\gtrltRegisterLevelOverwritable{\gtrlt@sparsenode@maxsize}
+\gtr@proc@register@level@local{\gtrlt@sparsenode@minsize}
+\gtr@proc@register@level@local{\gtrlt@sparsenode@maxsize}
 %    \end{macrocode}
 %
 % \begin{macro}{\gtrltSparseNodeProcessor}
@@ -884,11 +873,11 @@ parent {
 \gtrlt@texttranslation@add{Children}
 \gtrlt@texttranslation@add{With}
 %    \end{macrocode}
-% The following are the actual translations used by this package.
+% The following are the actual translations used by this library.
 % We encapsulate the code in an |\AtBeginDocument| such that the
 % |append code| portion is ensured to be run after
 % \textsf{genealogytree} set its language code. This allows the
-% user of the package to use |\gtrset{language=XXX}| in the
+% user of the library to use |\gtrset{language=XXX}| in the
 % preamble as well as in the document without any changes to the
 % normal use in \textsf{genealogytree}.
 %    \begin{macrocode}
@@ -909,7 +898,7 @@ parent {
 %    \end{macrocode}
 %
 %\iffalse
-%</package>
+%</gtrlib>
 %\fi
 % \Finale
 \endinput

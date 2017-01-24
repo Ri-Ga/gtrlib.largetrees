@@ -9,11 +9,10 @@ CTAN = $(SRC) $(INS) $(DOC) $(README)
 all: package docs
 .PHONY: all package docs clean cleanall ctan
 
-package: $(PKG)
-docs:    $(DOC)
-
-$(PKG): $(SRC) $(INS)
+package: $(SRC) $(INS)
 	latex $(INS)
+
+docs:    $(DOC)
 
 $(DOC): $(SRC) $(PKG)
 	pdflatex $(SRC)
@@ -34,4 +33,4 @@ clean:
 	rm -f example.gauss.graph
 
 cleanall: clean
-	rm -f $(NAME).{pdf,sty}
+	rm -f $(NAME).{pdf,sty} $(NAME).code.tex
