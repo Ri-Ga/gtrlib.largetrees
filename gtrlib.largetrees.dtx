@@ -22,7 +22,7 @@
 %<package>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<package>\ProvidesPackage{gtrlib.largetrees}
 %<*package>
-    [2017/01/24 v1.1 Package providing extended options for the genealogytree package]
+    [2017/02/19 v1.2 Package providing extended options for the genealogytree package]
 %</package>
 %
 %<*driver>
@@ -142,7 +142,7 @@ parent {
   \NiceDescribeStuff{\hbox to 0pt{\hss\string#1}}{#2}}
 \newcommand\NiceDescribeConstant[1]{% #1=constant
   \NiceDescribeStuff{\hbox to 0pt{\hss #1\quad}}{}\ignorespaces}
-\usepackage[templates]{genealogytree}[2017/01/20]
+\usepackage[templates]{genealogytree}[2017/01/29 version 1.10]
 \gtruselibrary{largetrees}
 \usepackage{hypdoc}
 \usepackage[capitalise,nameinlink]{cleveref}
@@ -177,6 +177,7 @@ parent {
 %
 % \changes{v1.0}{2016/12/23}{Initial version}
 % \changes{v1.1}{2017/01/24}{Split into package and library}
+% \changes{v1.2}{2017/02/19}{Profession field went to genealogytree package}
 %
 % \GetFileInfo{gtrlib.largetrees.dtx}
 %
@@ -202,7 +203,6 @@ parent {
 % \begin{description}
 % \item[database fields:]\leavevmode
 %   \begin{itemize}[nosep]
-%   \item profession
 %   \item spouse, spousebirth, spousedeath
 %   \item children
 %   \end{itemize}
@@ -233,36 +233,6 @@ parent {
 % \end{itemize}
 %
 % \section{Database Fields}
-%
-% \subsection{Profession}
-%
-% For adding the profession of a person to a genealogy tree, the package
-% defines the |profession| database entry. This is an ordinary text field.
-% The following example shows how the database field can be used, at the
-% example of an entry about Gauss \cite[Section~2.3.2]{GenealogyTreeDoc}
-% in the database format introduced in \cref{sec:format-PMCP}.
-% \begin{LTXexample}
-% \begin{genealogypicture}[processing=database,
-%   database format=person marriage children profession]
-% sandclock{ child{
-%   g[id=GauxCarl1777]{male,
-%     name={Johann \pref{Carl Friedrich} \surn{Gau\ss{}}},
-%     birth={1777-04-30}{Braunschweig (Niedersachsen)},
-%     death={1855-02-23}{G\"ottingen (Niedersachsen)},
-%     profession={Mathematiker, Astronom, Geod\"at und Physiker},
-%   }}}
-% \end{genealogypicture}
-% \end{LTXexample}
-%
-% The original of the example uses the |comment| field for specifying the
-% profession. Having the |profession| field, as it is introduced in
-% this package allows one to better structure the data about persons.
-%
-% Note that the default formats provided by the \textsf{genealogytree}
-% package do not display the content of the |profession| field. Thus,
-% if you want to display this content, either use the format(s) provided
-% by this package (see \cref{sec:db-formats}) or define
-% your own database format (see \cite[Section~7.5]{GenealogyTreeDoc}).
 %
 % \subsection{Spouse}
 %
@@ -490,7 +460,7 @@ parent {
 %\fi
 % The package has the following dependencies:
 %    \begin{macrocode}
-\RequirePackage{genealogytree}[2017/01/20]
+\RequirePackage{genealogytree}[2017/01/29 version 1.10]
 \gtruselibrary{largetrees}
 %    \end{macrocode}
 %
@@ -509,32 +479,6 @@ parent {
 %    \end{macrocode}
 %
 % \subsection{Database Fields}
-%
-% \subsubsection{Profession}
-% This adds a new field for the profession of a person.
-% \begin{macro}{\gtrDBprofession}
-% \begin{macro}{\gtrPrintProfession}
-% The |\gtrDBprofession| macro holds what is provided for the
-% |profession| key of a database entry (this macro is defined
-% by |\gtr@db@new@store|).
-% The |\gtrPrintProfession| macro prints a formatted version
-% of the profession of a database entry.
-%    \begin{macrocode}
-\gtr@db@new@store{profession}
-\def\gtrPrintProfession{\hspace{0pt}{\itshape\gtrDBprofession}}
-%    \end{macrocode}
-% \end{macro}
-% \end{macro}
-% \begin{macro}{\gtrifprofessiondefined}
-% The |\gtrifprofessiondefined|\marg{true}\marg{false} macro expands to
-% \meta{true} if the profession of a database entry is defined, and
-% expands to \meta{false} otherwise.
-% This macro can be used, for instance, by database formats
-% (see \cref{sec:impl-database-formats}).
-%    \begin{macrocode}
-\def\gtrifprofessiondefined#1#2{\ifdefvoid{\gtrDBprofession}{#2}{#1}}
-%    \end{macrocode}
-% \end{macro}
 %
 % \subsubsection{Spouse}
 % This adds three new fields for providing information about the spouse
